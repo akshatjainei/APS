@@ -1,7 +1,8 @@
+const connectDB = require('./db/connect');
 const express = require('express')
 const app = express()
 const parkingLot = require('./routes/parkingLot');
-const connectDB = require('./db/connect');
+require('dotenv').config()
 
 
 app.use(express.json());
@@ -15,6 +16,14 @@ app.get('/' , (req, res)=>{
     res.send('hey')
 })
 
-app.listen(PORT , (req , res)=>{
-    console.log(`Server running at ${PORT}`)
-})
+
+const start = async ()=>{
+    try {
+        await connectDB(process.env.MONGO_URI)
+        app.listen(PORT , (req , res)=>{console.log(`Server running at ${PORT}`)})
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+start()
