@@ -1,3 +1,4 @@
+const User = require('./models/user')
 const passport = require('passport')
 require('dotenv').config()
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
@@ -9,6 +10,7 @@ passport.use(new GoogleStrategy({
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
+    console.log(accessToken,profile)
     done(null,profile)
   }
 ));
