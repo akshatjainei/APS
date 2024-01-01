@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const passport = require('passport')
+const cvapi = require('./cvapi')
 const parkingLot = require('./routes/parkingLot');
 require('./auth')
 require('dotenv').config()
