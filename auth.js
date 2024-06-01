@@ -8,17 +8,33 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:3300/api/v1/parkingLot",
     passReqToCallback   : true
-  },
-  function(request, accessToken, refreshToken, profile, done) {
-    console.log(accessToken,profile)
-    done(null,profile)
-  }
-));
+  },(request, accessToken, refreshToken, profile, done)=>User.findOne({ googleId: profile.id }, (err, user) => {
+    if (err) {
+        return done(err);
+    }
+    if (!user) {
+        const newUser = new User({
+            googleId: profile.id,
+            displayName: profile.displayName,
+        });
+        newUser.save((err) => {
+            if (err) {
+                return done(err);
+            }
+            return done(null, newUser);
+        });
+    } else {
+        return done(null, user);
+    } 
+  })
+))
 
 passport.serializeUser((user,done)=>{
     done(null,user)
 })
 
-passport.deserializeUser((user , done)=>[
-    done(null , user)
-])
+passport.deserializeUser((user , done)=>{
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
+})

@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
 
-const Schema = new mongoose.Schema({
-  email: {
+const User = new mongoose.Schema({
+  googleId: {
     type: String,
     required: [true, 'must provide email'],
     trim: true,
     maxlength: [20, 'name can not be more than 20 characters'],
   },
-  name: {
+  displayName: {
     type: String,
     required: [true, 'must provide name'],
     trim: true,
@@ -15,4 +15,4 @@ const Schema = new mongoose.Schema({
   },
 })
 
-module.exports = mongoose.model('userInfo', Schema)
+module.exports = mongoose.model('userInfo', User)

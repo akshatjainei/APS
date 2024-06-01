@@ -1,39 +1,19 @@
+const express = require('express')
 const { spawn } = require('child_process');
 
-function runPythonScript(scriptPath, args) {
-    return new Promise((resolve, reject) => {
-        const pythonProcess = spawn('python', [scriptPath, ...args]);
+const scripter = () => {
 
-        let output = '';
-        let error = '';
+    let dataToSend;
+    const python = spawn('python', ['script.py', firstNum , secondNum]);
+    python.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...');
+        dataToSend = data.toString();
+    });
 
-        pythonProcess.stdout.on('data', (data) => {
-            output += data.toString();
-        });
-
-        pythonProcess.stderr.on('data', (data) => {
-            error += data.toString();
-        });
-
-        pythonProcess.on('close', (code) => {
-            if (code === 0) {
-                resolve(output);
-            } else {
-                reject(new Error(`Python script execution failed with code ${code}. Error: ${error}`));
-            }
-        })
-    })
+    python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        res.send(dataToSend)
+    });
 }
 
-const scriptPath = 'path/to/your/python_script.py';
-const scriptArgs = ['arg1', 'arg2'];
-
-runPythonScript(scriptPath, scriptArgs)
-    .then((output) => {
-        console.log('Output from Python script:', output);
-    })
-    .catch((error) => {
-        console.error('Error running Python script:', error);
-    })
-
-module.exports = runPythonScript()
+export default scripter
