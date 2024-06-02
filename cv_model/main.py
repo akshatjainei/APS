@@ -34,11 +34,18 @@ def checkParkingSpace(imgPro):
             value_from_dict = mydict.get((x, y), None)
             # Convert list to tuple before adding to the set
             value_as_tuple = tuple(value_from_dict) if value_from_dict is not None else None
-            empty_spaces.add(value_as_tuple)
+            ele = value_as_tuple[0]
+            empty_spaces.add(ele)
             spaceCounter += 1
         else:
             color = (0, 0, 255)
             thickness = 2
+            value_from_dict = mydict.get((x, y), None)
+            # Convert list to tuple before adding to the set
+            value_as_tuple = tuple(value_from_dict) if value_from_dict is not None else None
+            ele = value_as_tuple[0]
+            if empty_spaces.__contains__(ele):
+                empty_spaces.remove(ele)
 
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
         cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1,
@@ -51,8 +58,7 @@ def checkParkingSpace(imgPro):
     cvzone.putTextRect(img, f'Free: {spaceCounter}/{len(posList)}', (100, 50), scale=3,
                        thickness=5, offset=20, colorR=(0, 200, 0))
 
-    print(empty_spaces)
-    print('spacecounter', spaceCounter)
+    return empty_spaces, spaceCounter
 
 
 while True:
@@ -67,6 +73,8 @@ while True:
     kernel = np.ones((3, 3), np.uint8)
     imgDilate = cv2.dilate(imgMedian, kernel, iterations=1)
 
-    checkParkingSpace(imgDilate) 
+    anslist, count = checkParkingSpace(imgDilate)
+    print(anslist)
+    print(count)
     cv2.imshow("Image", img)
     cv2.waitKey(10)
