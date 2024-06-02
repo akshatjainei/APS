@@ -67,6 +67,6 @@ while True:
     kernel = np.ones((3, 3), np.uint8)
     imgDilate = cv2.dilate(imgMedian, kernel, iterations=1)
 
-    checkParkingSpace(imgDilate)
+    checkParkingSpace(imgDilate) 
     cv2.imshow("Image", img)
     cv2.waitKey(10)

@@ -10,4 +10,4 @@ def calculate_total(first_num , second_num ):
     print(first_num + second_num )
 
 # call the function and pass variables to it
-calculate_total(first_num , second_num )
+calculate_total(first_num , second_num)
