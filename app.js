@@ -7,6 +7,7 @@ const passport = require('passport')
 const parkingLot = require('./routes/parkingLot');
 require('./auth')
 require('dotenv').config()
+const callFastAPI = require('./cvapi')
 
 
 app.use(express.json());
@@ -25,15 +26,6 @@ app.get('/auth/google',
       [ 'email', 'profile' ] }
 ));
 
-async function callFastAPI() {
-    try {
-        const response = await axios.get('http://127.0.0.1:8000/output');
-        console.log(response.data);
-    } catch (error) {
-        console.error(`Error: ${error}`);
-    }
-}
-
 app.get( '/auth/google/callback',
     passport.authenticate( 'google', {
         successRedirect: '/api/v1/parkingLot',
@@ -46,7 +38,14 @@ app.get('/auth/google/failure',(req, res)=>{
 
 const start = async ()=>{
     try {
-        await connectDB(process.env.MONGO_URI)
+        connectDB(process.env.MONGO_URI)
+        const space = await callFastAPI
+        console.log('Total empty parking slots :', space.count)
+        let rand = 0
+        for(let i = 0 ; i < space.list.length ; i++){
+            rand =  Math.floor(Math.random() * i);
+        }
+        console.log('Assigned Parkign Lot number :',space.list[rand])
         app.listen(PORT , (req , res)=>{console.log(`Server running at ${PORT}`)})
     } catch (err) {
         console.log(err)
@@ -54,4 +53,3 @@ const start = async ()=>{
 }
 
 start()
-callFastAPI()
