@@ -1,6 +1,7 @@
 const connectDB = require('./db/connect');
 const express = require('express')
 const app = express()
+const axios = require('axios')
 const path = require('path')
 const passport = require('passport')
 const parkingLot = require('./routes/parkingLot');
@@ -24,6 +25,15 @@ app.get('/auth/google',
       [ 'email', 'profile' ] }
 ));
 
+async function callFastAPI() {
+    try {
+        const response = await axios.get('http://127.0.0.1:8000/output');
+        console.log(response.data);
+    } catch (error) {
+        console.error(`Error: ${error}`);
+    }
+}
+
 app.get( '/auth/google/callback',
     passport.authenticate( 'google', {
         successRedirect: '/api/v1/parkingLot',
@@ -44,3 +54,4 @@ const start = async ()=>{
 }
 
 start()
+callFastAPI()
