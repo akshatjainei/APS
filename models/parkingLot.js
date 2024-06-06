@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const cron =  require('node-cron')
+const updateParkingLot = require('../updateParkingLot')
 
 const Schema = new mongoose.Schema({
   name: {
@@ -15,7 +17,16 @@ const Schema = new mongoose.Schema({
     type : String,
     required: [true, 'must provide name'],
     maxlength: [100, 'name can not be more than 20 characters'],
+  },
+  count:{
+    type : Number,
+    required : [true , 'Give initial number']
   }
 })
+
+cron.schedule('* * * * *', () => {
+  console.log('Running updateParameter task');
+  updateParkingLot()
+});
 
 module.exports = mongoose.model('parkingLotInfo', Schema)

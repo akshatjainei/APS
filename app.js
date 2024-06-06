@@ -1,13 +1,16 @@
-const connectDB = require('./db/connect');
 const express = require('express')
 const app = express()
 const axios = require('axios')
 const path = require('path')
 const passport = require('passport')
+const cron = require('node-cron')
 const parkingLot = require('./routes/parkingLot');
 require('./auth')
 require('dotenv').config()
 const callFastAPI = require('./cvapi')
+const mongoose = require('mongoose')
+const connectDB = require('./db/connect')
+const updateParkingLot = require('./updateParkingLot')
 
 
 app.use(express.json());
@@ -38,8 +41,14 @@ app.get('/auth/google/failure',(req, res)=>{
 
 const start = async ()=>{
     try {
-        connectDB(process.env.MONGO_URI)
-        const space = await callFastAPI
+        const connectDB = (url)=>{
+        return mongoose
+            .connect(url)
+            .then(()=>console.log('Connected to the DB'))
+            .catch((err)=>console.log(err))
+        }
+        connectDB(url)
+        const space = await callFastAPI()
         console.log('Total empty parking slots :', space.count)
         let rand = 0
         for(let i = 0 ; i < space.list.length ; i++){

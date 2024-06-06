@@ -10,4 +10,4 @@ async function callFastAPI() {
     }
 }
 
-module.exports = callFastAPI()
+module.exports = callFastAPI
