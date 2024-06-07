@@ -30,7 +30,7 @@ const getParkingLot = (async (req, res) => {
 
 const updateParkingLot = (async (req, res) => {
   try{
-    const sourceData = callFastAPI
+    const sourceData = callFastAPI()
     if(!sourceData){
       console.log('cv_model not running')
       return

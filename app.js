@@ -11,6 +11,7 @@ const callFastAPI = require('./cvapi')
 const mongoose = require('mongoose')
 const connectDB = require('./db/connect')
 const updateParkingLot = require('./updateParkingLot')
+const Razorpay  = require('razorpay')
 
 
 app.use(express.json());
@@ -19,6 +20,10 @@ app.use('/api/v1/parkingLot', parkingLot);
 
 
 const PORT = process.env.PORT || 3300
+
+app.get('/test',(req,res)=>{
+    res.sendFile(path.join(__dirname, './public', 'standard.html'))
+})
 
 app.get('/' , (req, res)=>{
     res.sendFile('index.html')
@@ -38,6 +43,28 @@ app.get( '/auth/google/callback',
 app.get('/auth/google/failure',(req, res)=>{
     res.status(500).json({msg : 'gadbad hogyi bhai'})
 })
+
+var instance = new Razorpay({
+    key_id: 'YOUR_KEY_ID',
+    key_secret: 'YOUR_KEY_SECRET',
+});
+
+app.post('/create/orderId' , (req , res)=>{
+    var options = {
+        amount: 2,  
+        currency: "INR",
+        receipt: "order_rcptid_11"
+      };
+      instance.orders.create(options, function(err, order) {
+        try {
+            console.log(order);
+            res.send({orderId : order.id});
+        } catch (error) {
+            console.error(error)
+        }
+    });
+})
+
 
 const start = async ()=>{
     try {

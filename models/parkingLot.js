@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const cron =  require('node-cron')
 const updateParkingLot = require('../updateParkingLot')
+const axios = require('axios')
 
 const Schema = new mongoose.Schema({
   name: {
@@ -27,6 +28,8 @@ const Schema = new mongoose.Schema({
 cron.schedule('* * * * *', () => {
   console.log('Running updateParameter task');
   updateParkingLot()
+  const response =  axios.get('http://127.0.0.1:3300/api/v1/parkingLot');
+  console.log(response.data.count)
 });
 
 module.exports = mongoose.model('parkingLotInfo', Schema)
