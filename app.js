@@ -10,7 +10,6 @@ require('dotenv').config()
 const callFastAPI = require('./cvapi')
 const mongoose = require('mongoose')
 const connectDB = require('./db/connect')
-const updateParkingLot = require('./updateParkingLot')
 const Razorpay  = require('razorpay')
 
 
@@ -68,6 +67,7 @@ app.post('/create/orderId' , (req , res)=>{
 
 const start = async ()=>{
     try {
+        const url = 'mongodb+srv://akshatjainei:V6ZFmbUCeRcO6Cs0@aps.axccqja.mongodb.net/?retryWrites=true&w=majority&appName=aps'
         const connectDB = (url)=>{
         return mongoose
             .connect(url)

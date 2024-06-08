@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const cron =  require('node-cron')
-const updateParkingLot = require('../updateParkingLot')
 const axios = require('axios')
 
 const Schema = new mongoose.Schema({
