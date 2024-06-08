@@ -67,7 +67,6 @@ app.post('/create/orderId' , (req , res)=>{
 
 const start = async ()=>{
     try {
-        const url = 'mongodb+srv://akshatjainei:V6ZFmbUCeRcO6Cs0@aps.axccqja.mongodb.net/?retryWrites=true&w=majority&appName=aps'
         const connectDB = (url)=>{
         return mongoose
             .connect(url)
