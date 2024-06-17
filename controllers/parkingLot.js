@@ -1,5 +1,5 @@
+const callFastAPI = require('../cvapi.js')
 const parkingLot = require('../models/parkingLot.js')
-const sourceModel = require('../cvapi.js')
 const getAllParkingLot = (async (req, res) => {
   try {
     const parkingLots = await parkingLot.find({})
@@ -29,24 +29,26 @@ const getParkingLot = (async (req, res) => {
 })
 
 const updateParkingLot = (async (req, res) => {
-  try{
-    const sourceData = callFastAPI()
-    if(!sourceData){
-      console.log('cv_model not running')
-      return
+  const { id: taskID } = req.params;
+  const space = await callFastAPI()
+  const newCount = space.count
+  try {
+    const task = await parkingLot.findOneAndUpdate(
+      { _id: taskID },
+      { count : newCount},
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!task) {
+      return next(createCustomError(`No task with id: ${taskID}`, 404));
     }
-    const newCount = Math.floor(Math.random(0,10))
-    const targetData = await parkingLot.findOne()
-    if (targetData) {
-      targetData.count = newCount
-      await targetData.save()
-      console.log(`Updated TargetModel parameter to ${newValue}`)
-    } else {
-      console.log('No data found in TargetModel')
-    }
-  }
-  catch(Error){
-    console.error(Error)
+
+    res.status(200).json({ task });
+  } catch (error) {
+    next(error);
   }
 })
 

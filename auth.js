@@ -5,7 +5,7 @@ const User = require('./models/user');  // Assuming you have a User model
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:3300/api/v1/parkingLot"
+  callbackURL: "http://localhost:3300/auth/google/callback"  // Ensure this matches your registered URL
 },
 async (token, tokenSecret, profile, done) => {
   try {
@@ -31,11 +31,11 @@ async (token, tokenSecret, profile, done) => {
 ));
 
 passport.serializeUser((user, done) => {
-done(null, user.id);
+  done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
-User.findById(id, (err, user) => {
-  done(err, user);
-});
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
 });

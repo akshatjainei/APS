@@ -1,20 +1,21 @@
+require('./auth')
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 const axios = require('axios')
 const path = require('path')
 const crypto = require('crypto')
+const { updateParkingLot } = require('./controllers/parkingLot');
 const passport = require('passport')
 const session = require('express-session')
 const cron = require('node-cron')
 const parkingLot = require('./routes/parkingLot')
-require('./auth')
-require('dotenv').config()
 const callFastAPI = require('./cvapi')
-const stripe = require('stripe')(process.env.STRIPE_KEY);
+const stripe = require('stripe')(process.env.STRIPE_KEY)
 const fs = require('fs');
 const mongoose = require('mongoose')
 const connectDB = require('./db/connect')
-
 
 const secret_key = crypto.randomBytes(64).toString('hex');
 
@@ -42,9 +43,18 @@ app.get('/auth/google',
   app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
-      res.redirect('http://localhost:3300/api/v1/parkingLot');
+      res.redirect('/parkingLot');
     }
   );
+
+
+app.get('/parkingLot', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+  res.send(`Welcome to the parking lot, ${req.user.name}`);
+});
+
   
   async function createPaymentLink() {
     let stripeData;
@@ -85,12 +95,20 @@ app.get('/auth/google',
     console.log('Send this payment link to your customers:', paymentLink);
   });
 
+
 const start = async ()=>{
     try {
-        mongoose.connect(process.env.MONGO_URI, {
-          })
-          .then(() => console.log('MongoDB connected'))
-          .catch(err => console.log(err));
+      cron.schedule('* * * * *', () => {
+        app.patch('./api/v1/parkingLot/6661c0fd89a9a279105bb87e' , updateParkingLot)
+        console.log('Updated')
+      })
+      const connectDB = (uri)=>{
+        return mongoose
+        .connect(uri)
+        .then(()=>console.log('Connected to the DB'))
+        .catch((err)=>console.log(err))
+      }
+      connectDB(uri)
         const space = await callFastAPI()
         console.log('Total empty parking slots :', space.count)
         let rand = 0
