@@ -1,31 +1,31 @@
 const express = require('express')
 const axios = require("axios")
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 
-// function startFastAPIServer(scriptPath) {
-//     const pythonProcess = exec('uvicorn fastApi:app --reload', [scriptPath]);
+const fastapiAppDir = './cv_model'
 
-//     pythonProcess.stdout.on('data', (data) => {
-//         console.log(`stdout: ${data}`);
-//     });
+const startFastAPIServer = () => {
+    return spawn('uvicorn', ['fastApi:app', '--reload'], {
+        cwd: fastapiAppDir,
+    });
+};
 
-//     pythonProcess.stderr.on('data', (data) => {
-//         console.error(`stderr: ${data}`);
-//     });
+const fastAPIServer = startFastAPIServer();
 
-//     pythonProcess.on('close', (code) => {
-//         console.log(`FastAPI server process exited with code ${code}`);
-//     });
+fastAPIServer.stdout.on('data', (data) => {
+    console.log(`FastAPI: ${data}`);
+});
 
-//     pythonProcess.on('error', (error) => {
-//         console.error(`Failed to start FastAPI server: ${error.message}`);
-//     });
-// }
+fastAPIServer.stderr.on('data', (data) => {
+    console.error(`FastAPI Error: ${data}`);
+});
 
-// const scriptPath = path.join(__dirname, './cv_model','fastApi.py'); 
+fastAPIServer.on('close', (code) => {
+    console.log(`FastAPI server exited with code ${code}`);
+});
 
-// startFastAPIServer(scriptPath);
+
 
 async function callFastAPI() {
     try {
