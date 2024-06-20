@@ -98,10 +98,7 @@ app.get('/parkingLot', (req, res) => {
 
 const start = async ()=>{
     try {
-      cron.schedule('* * * * *', () => {
-        app.patch('./api/v1/parkingLot/6661c0fd89a9a279105bb87e' , updateParkingLot)
-        console.log('Updated')
-      })
+      app.patch('./api/v1/parkingLot/6661c0fd89a9a279105bb87e' , updateParkingLot)
       const connectDB = (uri)=>{
         return mongoose
         .connect(uri)
