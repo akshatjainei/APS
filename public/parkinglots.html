@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Lot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1 class="logo">Parking Lots</h1>
+        <nav class="navigation">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
+            <button class="btnLogin-popup">Log-Out</button>
+        </nav>
+    </header>
+    <div class="card-container">
+        <div class="card">
+            <img src="ParkingLot.jpg" >
+            <div class="card-content">
+                <ul id="data-container"></ul>
+                <a href="" class="btn">Book a Slot For $3</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        fetch('http://localhost:3300/api/v1/parkingLot')
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            data.parkingLots?.forEach(parkinglot => {
+                const name = `<h3>${parkinglot.name}</h3>`;
+                const address = `<p>Address: ${parkinglot.address}</p>`;
+                const count = `<p>Available Slots : ${parkinglot.count}</p>`;
+                const markup = `<ul class="item">${name}${address}${count}</ul>`;
+                document.querySelector('#data-container').insertAdjacentHTML('beforeend', markup);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    </script>
+</body>
+</html>

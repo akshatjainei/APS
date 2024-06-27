@@ -99,6 +99,7 @@ app.get('/parkingLot', (req, res) => {
 const start = async ()=>{
     try {
       await app.patch('./api/v1/parkingLot/6661c0fd89a9a279105bb87e' , updateParkingLot)
+      const uri = 'mongodb+srv://akshatjainei:wcw3REs4tcmbluQK@aps.axccqja.mongodb.net/?retryWrites=true&w=majority&appName=aps'
       const connectDB = (uri)=>{
         return mongoose
         .connect(uri)
