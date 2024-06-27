@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: aps
+    image: keshavdock12/carpark-app
+    ports:
+      - 80:80
