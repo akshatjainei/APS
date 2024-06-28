@@ -57,6 +57,12 @@ async function createPaymentLink() {
           quantity: 1,
         },
       ],
+      after_completion: {
+        type: 'redirect',
+        redirect: {
+          url: 'http://localhost:3300/success',
+        },
+      },
     });
 
     stripeData.paymentLinkUrl = paymentLink.url;
@@ -73,6 +79,7 @@ createPaymentLink().then(paymentLink => {
   console.log('Send this payment link to your customers:', paymentLink);
 });
 
+const uri = 'mongodb+srv://akshatjainei:XXA8vQDRZWiWTTWM@aps.axccqja.mongodb.net/?retryWrites=true&w=majority&appName=aps'
 
 const start = async ()=>{
     try {
