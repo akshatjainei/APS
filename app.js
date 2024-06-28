@@ -79,7 +79,6 @@ createPaymentLink().then(paymentLink => {
   console.log('Send this payment link to your customers:', paymentLink);
 });
 
-const uri = 'mongodb+srv://akshatjainei:XXA8vQDRZWiWTTWM@aps.axccqja.mongodb.net/?retryWrites=true&w=majority&appName=aps'
 
 const start = async ()=>{
     try {
