@@ -16,6 +16,7 @@ const stripe = require('stripe')(process.env.STRIPE_KEY)
 const fs = require('fs')
 const connectDB = require('./db/connect')
 const Ticket = require('./routes/ticket')
+const generateTicket = require('./ticketgen')
 
 const secret_key = crypto.randomBytes(64).toString('hex');
 
@@ -97,23 +98,12 @@ const start = async ()=>{
         })
         .catch((error) => {
           console.error("error");
-        });
-
-        // TICKET GEN NA
-        // axios.post('http://localhost:3300/api/v1/ticket', {
-        //   "parkingSpot" : space.list[0],
-        //   "timestamp" : Date.now(),
-        // })
-        //   .then((response) => {
-        //     console.log(response.data);
-        //   })
-        //   .catch((error) => {
-        //     console.error(error);
-        //   });
-        
+        })
+      
+      // generateTicket()
       app.listen(PORT , (req , res)=>{console.log(`Server running at http://localhost:${PORT}`)})
     } catch (err) {
-        console.log(err)
+        console.log("SERVER ERROR")
     }
 }
 
