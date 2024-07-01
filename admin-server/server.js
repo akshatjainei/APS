@@ -9,24 +9,14 @@ async function startServer() {
     const app = express()
     const server = new ApolloServer({
         typeDefs:`
-           type User{
-                id : ID!,
-                name : String!
-                username : String!
-                email : String!
-                phone : String!
-                website : String!
-           } 
-
            type Ticket{
                 id : ID!
-                user : User!
-                parkingSpot : Number!
+                parkingSpot : String!
                 timestamp : String!
            }
             
            type Query{
-                getAllTickets : [Ticket]
+                getAllTicket : [Ticket]
            }
         `,
         resolvers : {
