@@ -82,7 +82,7 @@ createPaymentLink().then(paymentLink => {
   console.log('Send this payment link to your customers:', paymentLink);
 });
 
-const uri = process.env.MONGO_URI
+const uri = 'mongodb+srv://akshatjainei:jTuog3QvN1XTPAFa@aps.axccqja.mongodb.net/?retryWrites=true&w=majority&appName=aps'
 
 const start = async ()=>{
     try {
@@ -100,7 +100,7 @@ const start = async ()=>{
           console.error("error");
         })
       
-      // generateTicket()
+      generateTicket()
       app.listen(PORT , (req , res)=>{console.log(`Server running at http://localhost:${PORT}`)})
     } catch (err) {
         console.log("SERVER ERROR")

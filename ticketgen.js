@@ -1,5 +1,5 @@
 const callFastAPI = require("./cvapi");
-
+const axios = require("axios")
 async function generateTicket(){
     try{
         let space = await callFastAPI()
@@ -11,12 +11,8 @@ async function generateTicket(){
             "parkingSpot" : space.list[0]
         }
         data = await axios.post(url, body, {headers});
-        let data = response.data
-        console.log(data)
-        return console.log('posted')
     } catch(err) {
-        console.log("err->", err.response)
-        return res.status(500).send({ret_code: ReturnCodes.SOMETHING_WENT_WRONG});
+        console.log("err->", err)
     }
   }
 
