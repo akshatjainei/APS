@@ -17,6 +17,9 @@ const fs = require('fs')
 const connectDB = require('./db/connect')
 const Ticket = require('./routes/ticket')
 const generateTicket = require('./ticketgen')
+const { Redis } = require("ioredis")
+
+const client = new Redis()
 
 const secret_key = crypto.randomBytes(64).toString('hex');
 
@@ -84,23 +87,38 @@ createPaymentLink().then(paymentLink => {
 
 const uri = process.env.MONGO_URI
 
+async function patchSlots(){
+  try{
+    const space = await callFastAPI()
+    console.log('Total empty parking slots :', space.count)
+    console.log('Assigned Parkign Lot number :',space.list[0])
+    const cacheValue = client.get('parkingData')
+    if(cacheValue!==null){
+      return 
+    }
+    axios.patch('http://localhost:3300/api/v1/parkingLot/6661c0fd89a9a279105bb87e', {
+      "count" : space.count
+    })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error("error");
+    })
+    const { data } = await axios.get('localhost:3300/api/v1/parkingLot/6661c0fd89a9a279105bb87e');
+    await client.set('parkingData', JSON.stringify(data));
+    await client.expire('parkingData' , 5)
+  }
+  catch(err){
+    console.error(error)
+  }
+}
+
 const start = async ()=>{
     try {
       await connectDB(uri)
-      const space = await callFastAPI()
-      console.log('Total empty parking slots :', space.count)
-      console.log('Assigned Parkign Lot number :',space.list[0])
-      axios.patch('http://localhost:3300/api/v1/parkingLot/6661c0fd89a9a279105bb87e', {
-        "count" : space.count
-      })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error("error");
-        })
-      
-      generateTicket()
+      await patchSlots()
+      // generateTicket()
       app.listen(PORT , (req , res)=>{console.log(`Server running at http://localhost:${PORT}`)})
     } catch (err) {
         console.log("SERVER ERROR")
