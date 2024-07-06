@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1 class="logo">Parking Lots</h1>
+        <h1 class="logo">Smart Space</h1>
         <nav class="navigation">
             <a href="#">Home</a>
             <a href="#">About</a>
@@ -20,12 +20,13 @@
     <div class="card-container-2">
         <div class="card-2">
             <img id="qrcode" src="">
-            <script>
-                document.getElementById('qrcode').src = "<%= qrcode %>";
-            </script>
             <div class="card-content">
                 <ul id="data-container"></ul>
-                <a href="" class="btn">Book a Slot For $3</a>
+                <h3>Parking Slot : <span id="parking-slot"></span></h3>
+                <script>
+                    document.getElementById('qrcode').src = "<%= qrcode %>";
+                    document.getElementById('parking-slot').innerText = "<%= parking-slot %>";
+                </script>
             </div>
         </div>
     </div>

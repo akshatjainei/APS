@@ -29,6 +29,12 @@ async (accessToken, refreshToken, profile, done) => {
   }
 }));
 
+const ensureAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+  return next();
+  }
+}
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -41,3 +47,5 @@ passport.deserializeUser(async (id, done) => {
     done(err, null);
   }
 });
+
+module.exports = ensureAuthenticated

@@ -46,7 +46,7 @@ app.get('/parkingLot' , (req , res)=>{
 app.get('/payment-success', async (req, res) => {
   const newTicket = await generateTicket()
   // console.log(newTicket.data.pl.parkingSpot)
-  const key = crypto.Cipher(`${newTicket.data.pl.parkingSpot}${newTicket.data.pl.timestamp}`)
+  // const key = crypto.Cipher(`${newTicket.data.pl.parkingSpot}${newTicket.data.pl.timestamp}`)
   // console.log(key)
   const url = `${newTicket.data.pl.parkingSpot}${newTicket.data.pl.timestamp}`
   qr.toDataURL(url, (err, src) => {
@@ -59,11 +59,11 @@ app.get('/payment-success', async (req, res) => {
         res.send('Error occurred');
         return;
       }
-      const htmlWithQrCode = htmlData.replace('<%= qrcode %>', src);
-      res.send(htmlWithQrCode);
+      const htmlWithQr = htmlData.replace('<%= parking-slot %>' , `${newTicket.data.pl.parkingSpot}`).replace('<%= qrcode %>',src);
+      res.send(htmlWithQr);
     });
   });
-});
+})
   
 async function createPaymentLink() {
   let stripeData;
@@ -128,19 +128,19 @@ async function patchSlots(){
     await client.expire('parkingData' , 5)
   }
   catch(err){
-    console.error(error)
+    console.error(err)
   }
 }
 
 const start = async ()=>{
-    try {
-      const uri = process.env.MONGO_URI
-      await connectDB(uri)
-      await patchSlots()
-      app.listen(PORT , (req , res)=>{console.log(`Server running at http://localhost:${PORT}`)})
-    } catch (err) {
-        console.log("SERVER ERROR")
-    }
+  try {
+    const uri = 'mongodb+srv://akshatjainei:hG8sI0Q6WdcIGXJf@aps.axccqja.mongodb.net/?retryWrites=true&w=majority&appName=aps'
+    await connectDB(uri)
+    await patchSlots()
+    app.listen(PORT , (req , res)=>{console.log(`Server running at http://localhost:${PORT}`)})
+  } catch (err) {
+      console.log("SERVER ERROR")
+  }
 }
 
 start()
