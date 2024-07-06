@@ -1,10 +1,15 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis/redis-stack
+    container_name: redis
+    ports:
+      - 6379:6379
+      - 8001:8001
   web:
-    container_name: aps
     image: keshavdock12/carpark-app
+    container_name: cv_model
     ports:
       - 80:80
-
       

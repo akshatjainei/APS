@@ -36,7 +36,7 @@ app.use('/auth', authRoutes);
 const PORT = process.env.PORT || 3300
 
 app.get('/' , (req, res)=>{
-    res.sendFile('index.html')
+    res.sendFile(path.join(__dirname, './public', 'index.html'))
 })
 
 app.get('/parkingLot' , (req , res)=>{
@@ -45,6 +45,7 @@ app.get('/parkingLot' , (req , res)=>{
 
 app.get('/payment-success', async (req, res) => {
   const newTicket = await generateTicket()
+  
   // console.log(newTicket.data.pl.parkingSpot)
   // const key = crypto.Cipher(`${newTicket.data.pl.parkingSpot}${newTicket.data.pl.timestamp}`)
   // console.log(key)
@@ -132,15 +133,18 @@ async function patchSlots(){
   }
 }
 
-const start = async ()=>{
+const start = async () => {
   try {
-    const uri = 'mongodb+srv://akshatjainei:hG8sI0Q6WdcIGXJf@aps.axccqja.mongodb.net/?retryWrites=true&w=majority&appName=aps'
-    await connectDB(uri)
-    await patchSlots()
-    app.listen(PORT , (req , res)=>{console.log(`Server running at http://localhost:${PORT}`)})
+    const uri = process.env.MONGO_URI;
+    await connectDB(uri);
+    await patchSlots();
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
   } catch (err) {
-      console.log("SERVER ERROR")
+    console.log("SERVER ERROR", err);
   }
-}
+};
 
-start()
+start();
