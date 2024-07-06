@@ -11,6 +11,7 @@ async function generateTicket(){
             "parkingSpot" : space.list[0]
         }
         data = await axios.post(url, body, {headers});
+        return data
     } catch(err) {
         console.log("err->", err)
     }

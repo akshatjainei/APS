@@ -17,6 +17,7 @@ const fs = require('fs')
 const connectDB = require('./db/connect')
 const Ticket = require('./routes/ticket')
 const generateTicket = require('./ticketgen')
+const qr = require('qrcode')
 const { Redis } = require("ioredis")
 
 const client = new Redis()
@@ -38,13 +39,31 @@ app.get('/' , (req, res)=>{
     res.sendFile('index.html')
 })
 
-app.get('/success' , (req , res)=>{
-  res.sendFile(path.join(__dirname, './public', 'success.html'))
-})
-
 app.get('/parkingLot' , (req , res)=>{
   res.sendFile(path.join(__dirname, './public', 'parkinglots.html'))
 })
+
+app.get('/payment-success', async (req, res) => {
+  const newTicket = await generateTicket()
+  // console.log(newTicket.data.pl.parkingSpot)
+  const key = crypto.Cipher(`${newTicket.data.pl.parkingSpot}${newTicket.data.pl.timestamp}`)
+  // console.log(key)
+  const url = `${newTicket.data.pl.parkingSpot}${newTicket.data.pl.timestamp}`
+  qr.toDataURL(url, (err, src) => {
+    if (err) {
+      res.send('Error occurred');
+      return;
+    }
+    fs.readFile(path.join(__dirname, './public', 'successpage.html'), 'utf8', (err, htmlData) => {
+      if (err) {
+        res.send('Error occurred');
+        return;
+      }
+      const htmlWithQrCode = htmlData.replace('<%= qrcode %>', src);
+      res.send(htmlWithQrCode);
+    });
+  });
+});
   
 async function createPaymentLink() {
   let stripeData;
@@ -66,7 +85,7 @@ async function createPaymentLink() {
       after_completion: {
         type: 'redirect',
         redirect: {
-          url: 'http://localhost:3300/success',
+          url: 'http://localhost:3300/payment-success',
         },
       },
     });
@@ -85,7 +104,6 @@ createPaymentLink().then(paymentLink => {
   console.log('Send this payment link to your customers:', paymentLink);
 });
 
-const uri = process.env.MONGO_URI
 
 async function patchSlots(){
   try{
@@ -116,9 +134,9 @@ async function patchSlots(){
 
 const start = async ()=>{
     try {
+      const uri = process.env.MONGO_URI
       await connectDB(uri)
       await patchSlots()
-      // generateTicket()
       app.listen(PORT , (req , res)=>{console.log(`Server running at http://localhost:${PORT}`)})
     } catch (err) {
         console.log("SERVER ERROR")
