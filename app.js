@@ -45,7 +45,6 @@ app.get('/parkingLot' , (req , res)=>{
 
 app.get('/payment-success', async (req, res) => {
   const newTicket = await generateTicket()
-  
   // console.log(newTicket.data.pl.parkingSpot)
   // const key = crypto.Cipher(`${newTicket.data.pl.parkingSpot}${newTicket.data.pl.timestamp}`)
   // console.log(key)
@@ -137,7 +136,10 @@ const start = async () => {
   try {
     const uri = process.env.MONGO_URI;
     await connectDB(uri);
-    await patchSlots();
+    cron.schedule('* * * * *', async () => {
+      console.log('Running updateParameter task');
+      await patchSlots();
+    });
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`Server running at http://localhost:${PORT}`);
