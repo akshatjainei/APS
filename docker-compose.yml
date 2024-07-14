@@ -12,4 +12,3 @@ services:
     container_name: cv_model
     ports:
       - 80:80
-      
